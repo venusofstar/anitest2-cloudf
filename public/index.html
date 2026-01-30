@@ -18,7 +18,7 @@ footer { text-align:center; padding:10px; font-size:12px; color:#aaa; }
 </head>
 <body>
 
-<header>Anime Series</header>
+<header>Hunter X Hunter Tagalog Dubbed</header>
 
 <div class="container">
   <video id="player" controls autoplay></video>
@@ -28,7 +28,7 @@ footer { text-align:center; padding:10px; font-size:12px; color:#aaa; }
 <footer>© Anime Series Player</footer>
 
 <script>
-// Disable right-click and F12 / DevTools
+// Disable right-click and DevTools
 document.addEventListener('contextmenu', e => e.preventDefault());
 document.addEventListener('keydown', e => {
   if(e.key==='F12'||(e.ctrlKey&&e.shiftKey&&e.key==='I')) e.preventDefault();
@@ -40,39 +40,40 @@ let currentEpisode = 1;
 
 // Highlight active episode
 function highlightEpisode(ep) {
-  document.querySelectorAll(".episode").forEach(e=>e.classList.remove("active"));
-  const el = document.getElementById("ep"+ep);
+  document.querySelectorAll(".episode").forEach(e => e.classList.remove("active"));
+  const el = document.getElementById("ep" + ep);
   if(el) el.classList.add("active");
 }
 
-// Load episode dynamically from Cloudflare serverless function
+// Load episode dynamically from serverless function
 async function loadEpisode(ep) {
   try {
     const res = await fetch(`/api/episode/${ep}`);
     const data = await res.json();
-    if(data.src) {
+    if(data.src){
       player.src = data.src;
       player.play();
       highlightEpisode(ep);
     } else {
       alert("Episode unavailable");
     }
-  } catch {
+  } catch (err) {
+    console.error(err);
     alert("Episode unavailable");
   }
 }
 
-// Create 148 episode buttons
+// Generate episode buttons
 for(let i=1; i<=148; i++){
   const div = document.createElement("div");
   div.className = "episode";
-  div.id = "ep"+i;
+  div.id = "ep" + i;
   div.innerText = "Episode " + i;
-  div.onclick = ()=>loadEpisode(i);
+  div.onclick = () => loadEpisode(i);
   episodeList.appendChild(div);
 }
 
-// Auto load Episode 1
+// Auto load first episode
 loadEpisode(1);
 </script>
 
