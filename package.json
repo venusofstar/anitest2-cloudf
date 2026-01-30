@@ -1,7 +1,7 @@
 {
   "name": "anime-player",
   "version": "1.0.0",
-  "description": "Protected anime player for Cloudflare Pages",
+  "description": "Hunter X Hunter Tagalog Dubbed Player for Cloudflare Pages",
   "main": "index.js",
   "scripts": {
     "start": "wrangler pages dev public"
