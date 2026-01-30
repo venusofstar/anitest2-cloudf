@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hunter X Hunter Tagalog Dubbed</title>
+<style>
+body { margin:0; background:#0f0f0f; color:#fff; font-family:Arial, Helvetica, sans-serif; }
+header { background:#1c1c1c; padding:15px; text-align:center; font-size:22px; font-weight:bold; }
+.container { max-width:1000px; margin:auto; padding:10px; }
+video { width:100%; background:#000; border-radius:10px; outline:none; }
+.episode-list { margin-top:15px; display:grid; grid-template-columns:repeat(auto-fill,minmax(110px,1fr)); gap:10px; }
+.episode { background:#1e1e1e; padding:10px; text-align:center; border-radius:6px; cursor:pointer; transition:0.2s; font-size:14px; }
+.episode:hover { background:#ff4757; }
+.episode.active { background:#ff4757; }
+footer { text-align:center; padding:10px; font-size:12px; color:#aaa; }
+</style>
+</head>
+<body>
+
+<header>Anime Series</header>
+
+<div class="container">
+  <video id="player" controls autoplay></video>
+  <div class="episode-list" id="episodeList"></div>
+</div>
+
+<footer>© Anime Series Player</footer>
+
+<script>
+// Disable right-click and F12 / DevTools
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('keydown', e => {
+  if(e.key==='F12'||(e.ctrlKey&&e.shiftKey&&e.key==='I')) e.preventDefault();
+});
+
+const player = document.getElementById("player");
+const episodeList = document.getElementById("episodeList");
+let currentEpisode = 1;
+
+// Highlight active episode
+function highlightEpisode(ep) {
+  document.querySelectorAll(".episode").forEach(e=>e.classList.remove("active"));
+  const el = document.getElementById("ep"+ep);
+  if(el) el.classList.add("active");
+}
+
+// Load episode dynamically from Cloudflare serverless function
+async function loadEpisode(ep) {
+  try {
+    const res = await fetch(`/api/episode/${ep}`);
+    const data = await res.json();
+    if(data.src) {
+      player.src = data.src;
+      player.play();
+      highlightEpisode(ep);
+    } else {
+      alert("Episode unavailable");
+    }
+  } catch {
+    alert("Episode unavailable");
+  }
+}
+
+// Create 148 episode buttons
+for(let i=1; i<=148; i++){
+  const div = document.createElement("div");
+  div.className = "episode";
+  div.id = "ep"+i;
+  div.innerText = "Episode " + i;
+  div.onclick = ()=>loadEpisode(i);
+  episodeList.appendChild(div);
+}
+
+// Auto load Episode 1
+loadEpisode(1);
+</script>
+
+</body>
+</html>
