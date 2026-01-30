@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hunter X Hunter Tagalog Dubbed</title>
+
+<style>
+body {
+  margin: 0;
+  background: #0f0f0f;
+  color: #ffffff;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+header {
+  background: #1c1c1c;
+  padding: 15px;
+  text-align: center;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.container {
+  max-width: 1000px;
+  margin: auto;
+  padding: 10px;
+}
+
+video {
+  width: 100%;
+  background: #000;
+  border-radius: 10px;
+  outline: none;
+}
+
+.episode-list {
+  margin-top: 15px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 10px;
+}
+
+.episode {
+  background: #1e1e1e;
+  padding: 10px;
+  text-align: center;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s;
+  font-size: 14px;
+}
+
+.episode:hover {
+  background: #ff4757;
+}
+
+.episode.active {
+  background: #ff4757;
+}
+
+footer {
+  text-align: center;
+  padding: 10px;
+  font-size: 12px;
+  color: #aaa;
+}
+</style>
+</head>
+
+<body>
+
+<header>Hunter X Hunter Tagalog Dubbed</header>
+
+<div class="container">
+  <video id="player" controls autoplay></video>
+  <div class="episode-list" id="episodeList"></div>
+</div>
+
+<footer>© Anime Series Player</footer>
+
+<script>
+// Disable right-click and F12 / dev tools shortcuts
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('keydown', e => {
+  if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I')) e.preventDefault();
+});
+
+const player = document.getElementById("player");
+const episodeList = document.getElementById("episodeList");
+let currentEpisode = 1;
+
+// Base64 encoded URLs for simplicity
+const episodeURLs = [
+  // Episodes 1–60
+  "aHR0cHM6Ly9kbjcyMDcwNi5jYS5hcmNoaXZlLm9yZy8wL2l0ZW1zL2FuaW1lLTIuMC01LyVFMyU4MCU4MyVFMyU4MCU4NiVFMyU4MCU4My0xLnBtNA==",
+  "aHR0cHM6Ly9kbjcyMDcwNi5jYS5hcmNoaXZlLm9yZy8wL2l0ZW1zL2FuaW1lLTIuMC01LyVFMyU4MCU4MyVFMyU4MCU4NiVFMyU4MCU4My0yLnBtNA==",
+  // Add all other episodes similarly (1–148)
+];
+
+// Decode Base64 URL
+function decodeURL(str) {
+  return atob(str);
+}
+
+// Function to get episode URL based on index
+function getEpisodeURL(index) {
+  if (index-1 < episodeURLs.length) return decodeURL(episodeURLs[index-1]);
+  return "";
+}
+
+// Load episode function
+function loadEpisode(ep) {
+  currentEpisode = ep;
+  const url = getEpisodeURL(ep);
+  if(url) {
+    player.src = url;
+    highlightEpisode(ep);
+    player.play();
+  } else {
+    alert("Episode not available");
+  }
+}
+
+// Highlight active episode
+function highlightEpisode(ep) {
+  document.querySelectorAll(".episode").forEach(e => e.classList.remove("active"));
+  const el = document.getElementById("ep" + ep);
+  if(el) el.classList.add("active");
+}
+
+// Create Episodes 1–148
+for (let i = 1; i <= 148; i++) {
+  const div = document.createElement("div");
+  div.className = "episode";
+  div.id = "ep" + i;
+  div.innerText = "Episode " + i;
+  div.onclick = () => loadEpisode(i);
+  episodeList.appendChild(div);
+}
+
+// Auto load Episode 1
+loadEpisode(1);
+</script>
+
+</body>
+</html>
