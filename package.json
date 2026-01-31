@@ -1,10 +1,16 @@
 {
-  "name": "anime-player",
+  "name": "my-anime-app",
   "version": "1.0.0",
-  "description": "Hunter X Hunter Tagalog Dubbed Player for Cloudflare Pages",
-  "main": "index.js",
+  "description": "Anime streaming API hosted on Cloudflare Workers",
+  "main": "worker.js",
   "scripts": {
-    "start": "wrangler pages dev public"
+    "dev": "wrangler dev",
+    "publish": "wrangler publish"
   },
-  "dependencies": {}
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "wrangler": "^3.10.0"
+  }
 }
