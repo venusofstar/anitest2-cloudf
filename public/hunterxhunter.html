@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hunter X Hunter Tagalog Dubbed</title>
+<title>Hunter X Hunter | Anime Player</title>
 <style>
 body { margin:0; background:#0f0f0f; color:#fff; font-family:Arial, Helvetica, sans-serif; }
 header { background:#1c1c1c; padding:15px; text-align:center; font-size:22px; font-weight:bold; }
@@ -14,29 +14,33 @@ video { width:100%; background:#000; border-radius:10px; outline:none; }
 .episode:hover { background:#ff4757; }
 .episode.active { background:#ff4757; }
 footer { text-align:center; padding:10px; font-size:12px; color:#aaa; }
+a { color:#ff4757; text-decoration:none; }
+a:hover { text-decoration:underline; }
 </style>
 </head>
 <body>
 
-<header>Hunter X Hunter Tagalog Dubbed</header>
+<header>Hunter X Hunter (Tagalog Dubbed)</header>
 
 <div class="container">
   <video id="player" controls autoplay></video>
   <div class="episode-list" id="episodeList"></div>
 </div>
 
-<footer>© Anime Series Player</footer>
+<footer><a href="index.html">⬅ Back to Home</a> | © Anime Series Player</footer>
 
 <script>
 // Disable right-click and DevTools
 document.addEventListener('contextmenu', e => e.preventDefault());
-document.addEventListener('keydown', e => {
-  if(e.key==='F12'||(e.ctrlKey&&e.shiftKey&&e.key==='I')) e.preventDefault();
+document.addEventListener('keydown', e => { 
+  if(e.key==='F12'||(e.ctrlKey&&e.shiftKey&&e.key==='I')) e.preventDefault(); 
 });
 
 const player = document.getElementById("player");
 const episodeList = document.getElementById("episodeList");
-let currentEpisode = 1;
+
+// Hunter X Hunter episode list
+const totalEpisodes = 148; // HxH 1-148
 
 // Highlight active episode
 function highlightEpisode(ep) {
@@ -45,26 +49,27 @@ function highlightEpisode(ep) {
   if(el) el.classList.add("active");
 }
 
-// Load episode dynamically from serverless function
+// Load episode from server.js API
 async function loadEpisode(ep) {
   try {
-    const res = await fetch(`/api/episode/${ep}`);
+    const res = await fetch(`/api/hxh/${ep}`);
+    if(!res.ok) throw new Error("Episode not found");
     const data = await res.json();
     if(data.src){
       player.src = data.src;
       player.play();
       highlightEpisode(ep);
     } else {
-      alert("Episode unavailable");
+      alert("Episode not found");
     }
-  } catch (err) {
+  } catch(err) {
     console.error(err);
-    alert("Episode unavailable");
+    alert("Episode not found");
   }
 }
 
 // Generate episode buttons
-for(let i=1; i<=148; i++){
+for(let i=1; i<=totalEpisodes; i++){
   const div = document.createElement("div");
   div.className = "episode";
   div.id = "ep" + i;
@@ -73,7 +78,7 @@ for(let i=1; i<=148; i++){
   episodeList.appendChild(div);
 }
 
-// Auto load first episode
+// Auto-load first episode
 loadEpisode(1);
 </script>
 
