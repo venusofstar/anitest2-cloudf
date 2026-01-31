@@ -5,16 +5,74 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Anime Streaming Website</title>
 <style>
-body { margin:0; font-family:Arial, Helvetica, sans-serif; background:#0f0f0f; color:#fff; }
-header { background:#1c1c1c; padding:20px; text-align:center; font-size:24px; font-weight:bold; }
-.container { max-width:1200px; margin:auto; padding:20px; display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:20px; }
-.anime-card { background:#1e1e1e; border-radius:8px; overflow:hidden; cursor:pointer; transition:0.3s; text-align:center; }
-.anime-card img { width:100%; display:block; }
-.anime-card:hover { transform:scale(1.05); }
-.anime-card h3 { padding:10px; font-size:18px; }
-footer { text-align:center; padding:15px; font-size:12px; color:#aaa; }
-a { color:#ff4757; text-decoration:none; }
-a:hover { text-decoration:underline; }
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #0f0f0f;
+  color: #fff;
+}
+header {
+  background: #1c1c1c;
+  padding: 20px;
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+}
+.container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+}
+.anime-card {
+  background: #1e1e1e;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: 0.3s;
+  text-align: center;
+}
+.anime-card img {
+  width: 100%;
+  display: block;
+}
+.anime-card:hover {
+  transform: scale(1.05);
+}
+.anime-card h3 {
+  padding: 10px;
+  font-size: 18px;
+}
+video {
+  margin-top: 30px;
+  width: 90%;
+  max-width: 900px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 8px;
+  border: 2px solid #fff;
+}
+footer {
+  text-align: center;
+  padding: 15px;
+  font-size: 12px;
+  color: #aaa;
+}
+a {
+  color: #ff4757;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+.error {
+  text-align: center;
+  color: #ff4d4d;
+  margin-top: 10px;
+}
 </style>
 </head>
 <body>
@@ -25,31 +83,32 @@ a:hover { text-decoration:underline; }
   <!-- Anime cards rendered dynamically -->
 </div>
 
-<footer>© 2026 Anime Streaming Website | Visit: <a href="https://anitest2-cloudf.pages.dev/" target="_blank">anitest2-cloudf.pages.dev</a></footer>
+<div class="error" id="error"></div>
+
+<video id="videoPlayer" controls></video>
+
+<footer>
+  © 2026 Anime Streaming Website | Visit: 
+  <a href="https://anitest2-cloudf.pages.dev/" target="_blank">anitest2-cloudf.pages.dev</a>
+</footer>
 
 <script>
-// List of anime to render
+// Anime list
 const animeList = [
-  {
-    title: "Hunter X Hunter (Tagalog Dubbed)",
-    img: "https://upload.wikimedia.org/wikipedia/en/6/6e/Hunter_X_Hunter_Poster.jpg",
-    link: "hunterxhunter.html"
-  },
-  {
-    title: "Naruto (Tagalog Dubbed)",
-    img: "https://upload.wikimedia.org/wikipedia/en/9/94/NarutoCoverTankobon1.jpg",
-    link: "naruto.html"
-  },
-  // Add more anime here as objects
+  { title: "Hunter X Hunter (Tagalog Dubbed)", key: "hxh", maxEp: 148, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTe1c0BbttBo95dsdwPNAqjfN8F4ltEzcS1gLoAiiIqFFuqATEW-f6H5cRE84O4vDX10dYHhGPCH5qovibzFZ9UC_k8Qi34LNoTZ1XpXA&s=10" },
+  { title: "Black Clover (Tagalog Dubbed)", key: "blackclover", maxEp: 102, img: "https://m.media-amazon.com/images/M/MV5BZmZkZjNhMWMtM2U0Mi00MjdlLTk3NmMtMTMwZjgwOTJmODMzXkEyXkFqcGc@._V1_.jpg" },
+  { title: "Bleach (Tagalog Dubbed)", key: "bleach", maxEp: 167, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5yqZV0vGtEhI003iu4znbxYTXuN5rSnNwRuB2oJPB5A&s=10" }
 ];
 
 const container = document.getElementById("animeContainer");
+const videoPlayer = document.getElementById("videoPlayer");
+const errorDiv = document.getElementById("error");
 
-// Render anime cards dynamically
+// Render anime cards
 animeList.forEach(anime => {
   const card = document.createElement("div");
   card.className = "anime-card";
-  card.onclick = () => { location.href = anime.link; };
+  card.onclick = () => playAnime(anime);
 
   const img = document.createElement("img");
   img.src = anime.img;
@@ -62,6 +121,32 @@ animeList.forEach(anime => {
   card.appendChild(title);
   container.appendChild(card);
 });
+
+// Function to play anime
+function playAnime(anime) {
+  let ep = prompt(`Enter episode number (1-${anime.maxEp}) for ${anime.title}:`);
+  ep = parseInt(ep);
+  if (!ep || ep < 1 || ep > anime.maxEp) {
+    errorDiv.innerText = `Invalid episode number. Please enter 1-${anime.maxEp}.`;
+    return;
+  }
+  errorDiv.innerText = "";
+
+  // Fetch video URL from API
+  fetch(`/api/${anime.key}/${ep}`)
+    .then(res => {
+      if (!res.ok) throw new Error("Episode not found");
+      return res.json();
+    })
+    .then(data => {
+      videoPlayer.src = data.src;
+      videoPlayer.scrollIntoView({ behavior: "smooth" });
+      videoPlayer.play();
+    })
+    .catch(err => {
+      errorDiv.innerText = err.message;
+    });
+}
 </script>
 
 </body>
