@@ -1,0 +1,29 @@
+# =======================
+# Cloudflare Worker Config
+# =======================
+
+name = "my-anime-app"             # Name of your Worker/Project
+main = "worker.js"                # Entry file (your Worker code)
+type = "javascript"               # JS Worker (no bundler needed)
+compatibility_date = "2026-01-31" # Keep it up-to-date
+
+# =======================
+# Optional Settings
+# =======================
+
+# Environment variables for dev / prod (if needed)
+# [vars]
+# API_KEY = "your_key_here"
+
+# =======================
+# Routes for Pages + Worker
+# =======================
+# If using Cloudflare Pages, this is optional
+# [site]
+# bucket = "./public"              # folder for static files
+# entry-point = "worker"           # reference to your worker
+
+# =======================
+# Dev server
+# =======================
+# You can run `wrangler dev` and it will serve your Worker locally
